@@ -194,6 +194,48 @@ h1.hero-t i{font-style:normal;background:#fff;color:#000;padding:0 .12em}
   .rule{padding:16px 18px;gap:12px}
 }
 body{-webkit-tap-highlight-color:transparent}
+
+/* ===== 暗黑交互增强 ===== */
+/* 鼠标追光（仅精确指针设备） */
+@media (hover:hover) and (pointer:fine){
+  #spot{position:fixed;inset:0;z-index:910;pointer-events:none;opacity:0;
+    background:radial-gradient(circle 260px at var(--mx,50%) var(--my,50%),
+      rgba(255,255,255,.06),rgba(0,0,0,0) 36%,rgba(0,0,0,.5) 100%);
+    transition:opacity .9s}
+  body.entered #spot{opacity:1}
+}
+/* 故障字效 */
+@keyframes glitch{
+  0%,100%{transform:none;text-shadow:none;clip-path:none}
+  25%{transform:translate(-2px,1px);text-shadow:2px 0 #fff,-2px 0 #6a6a6a}
+  45%{transform:translate(2px,-1px);text-shadow:-2px 0 #fff,2px 0 #6a6a6a;clip-path:inset(10% 0 24% 0)}
+  65%{transform:translate(-1px,0);clip-path:inset(32% 0 14% 0)}
+}
+.glitch{animation:glitch .42s steps(2) 2}
+/* 悬停扫描线 */
+.price::after,.card::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 42%,rgba(255,255,255,.1) 50%,transparent 58%);
+  transform:translateX(-130%);transition:none}
+.price:hover::after,.card:hover::after{transform:translateX(130%);transition:transform .85s ease}
+.card:hover{transform:translateY(-5px)}
+.price:hover .num,.card:hover h3,.letter:hover .letter-v,.rule:hover .n{animation:glitch .35s steps(2) 2}
+.rule{transition:background .3s}
+.rule:hover{background:rgba(255,255,255,.04)}
+.rule:hover .n{text-shadow:0 0 12px rgba(255,255,255,.85)}
+#sectors a:hover{color:#fff;text-shadow:0 0 8px rgba(255,255,255,.6)}
+.doc-link:hover{background:#fff;color:#000;border-color:#fff}
+/* 从模糊中浮现（暗黑解码感） */
+[data-fx]{filter:blur(7px)}
+[data-fx].vis{filter:none}
+/* 点击脉冲 */
+#pulse{position:fixed;z-index:1700;pointer-events:none;left:0;top:0;border-radius:50%;
+  border:1px solid rgba(255,255,255,.7);width:16px;height:16px;opacity:0;
+  transform:translate(-50%,-50%) scale(0)}
+#pulse.go{animation:pulse .7s ease-out forwards}
+@keyframes pulse{to{transform:translate(-50%,-50%) scale(11);opacity:0;border-color:rgba(255,255,255,0)}}
+/* 全局微弱闪烁（胶片感） */
+@keyframes flick{0%,100%{opacity:1}48%{opacity:.97}49%{opacity:.8}50%{opacity:.97}51%{opacity:.9}52%{opacity:1}}
+body.entered #vig{animation:flick 6.5s steps(1) infinite}
 </style>
 </head>
 <body class="locked">
@@ -201,6 +243,8 @@ body{-webkit-tap-highlight-color:transparent}
 <div id="scan"></div>
 <div id="sweep"></div>
 <div id="vig"></div>
+<div id="spot"></div>
+<div id="pulse"></div>
 <div id="prog"></div>
 <div id="hud"><span>COCO · 虚恋</span><b>//</b><span>或许你愿意和我讲述心事</span><span style="margin-left:auto" id="hud-sec">00 入口</span></div>
 
@@ -225,18 +269,18 @@ body{-webkit-tap-highlight-color:transparent}
   <!-- 00 HERO -->
   <section id="hero">
     <div class="frame"></div><span class="corner tl"></span><span class="corner br"></span>
-    <div class="hero-kicker" data-fx>虚 拟 恋 人 · 营 业 中</div>
-    <h1 class="hero-t">或许你愿意<br>和我讲述<i>心事</i></h1>
-    <p class="hero-quote" data-fx>樱花树下的<em>时间被拉长了</em><br>或许你记得我们的约定呢</p>
+    <div class="hero-kicker" data-fx fx-scramble>虚 拟 恋 人 · 营 业 中</div>
+    <h1 class="hero-t" data-fx fx-scramble>或许你愿意<br>和我讲述<i>心事</i></h1>
+    <p class="hero-quote" data-fx fx-scramble>樱花树下的<em>时间被拉长了</em><br>或许你记得我们的约定呢</p>
     <div class="hero-cite" data-fx>—— Coco の 虚恋</div>
-    <div class="scroll-hint">SCROLL</div>
+    <div class="scroll-hint" data-fx fx-scramble>SCROLL</div>
   </section>
 
   <!-- 01 价目 -->
   <section id="price">
     <div class="frame"></div><span class="corner tl"></span><span class="corner br"></span>
     <div class="sec-tag" data-fx><span class="id">01</span> 价目 // PRICE</div>
-    <h2 class="title" data-fx>把这段时间<br><b>交给我</b></h2>
+    <h2 class="title" data-fx fx-scramble>把这段时间<br><b>交给我</b></h2>
     <p class="lead" data-fx>明码标价，不绕弯子。以完整文档为准。</p>
     <div class="price-grid">
       <div class="price" data-fx>
@@ -258,7 +302,7 @@ body{-webkit-tap-highlight-color:transparent}
   <section id="about">
     <div class="frame"></div><span class="corner tl"></span><span class="corner br"></span>
     <div class="sec-tag" data-fx><span class="id">02</span> 关于 // PROFILE</div>
-    <h2 class="title" data-fx>我是<b>Coco</b></h2>
+    <h2 class="title" data-fx fx-scramble>我是<b>Coco</b></h2>
     <div class="profile">
       <div class="p-box" data-fx>
         <div class="p-row"><span class="k">NAME</span><span class="v"><em>Coco</em></span></div>
@@ -280,7 +324,7 @@ body{-webkit-tap-highlight-color:transparent}
   <section id="svc">
     <div class="frame"></div><span class="corner tl"></span><span class="corner br"></span>
     <div class="sec-tag" data-fx><span class="id">03</span> 项目 // SERVICE</div>
-    <h2 class="title" data-fx>营业<b>项目</b></h2>
+    <h2 class="title" data-fx fx-scramble>营业<b>项目</b></h2>
     <div class="cards">
       <div class="card" data-fx>
         <div class="no">A · SKY</div>
@@ -309,10 +353,10 @@ body{-webkit-tap-highlight-color:transparent}
   <section id="heart">
     <div class="frame"></div><span class="corner tl"></span><span class="corner br"></span>
     <div class="sec-tag" data-fx><span class="id">04</span> 心事 // CONFIDE</div>
-    <h2 class="title" data-fx>说给<b>我听</b></h2>
+    <h2 class="title" data-fx fx-scramble>说给<b>我听</b></h2>
     <p class="lead" data-fx>没有评判，也没有时间限制。</p>
     <div class="letter" data-fx>
-      <div class="letter-v">
+      <div class="letter-v" data-fx fx-scramble>
         你是藏在云层里的<b>月光</b><br>
         不经意地落在我的心房<br>
         从此这一方小小天地<br>
@@ -325,7 +369,7 @@ body{-webkit-tap-highlight-color:transparent}
   <section id="notice">
     <div class="frame"></div><span class="corner tl"></span><span class="corner br"></span>
     <div class="sec-tag" data-fx><span class="id">05</span> 须知 // NOTICE</div>
-    <h2 class="title" data-fx>感谢您与我会面<br>请<b>仔细阅读</b></h2>
+    <h2 class="title" data-fx fx-scramble>感谢您与我会面<br>请<b>仔细阅读</b></h2>
     <div class="rules" data-fx>
       <div class="rule"><span class="n">01</span><span class="tx">请<b>提前告知你的雷点</b>。如未提前说明，默认无雷点，触雷概不负责。</span></div>
       <div class="rule"><span class="n">02</span><span class="tx"><b>不要传播我们的聊天内容</b>。见面之后，请尽情享受这场约会。</span></div>
@@ -343,7 +387,7 @@ body{-webkit-tap-highlight-color:transparent}
   <section id="end">
     <div class="frame"></div><span class="corner tl"></span><span class="corner br"></span>
     <div class="sec-tag" style="justify-content:center" data-fx><span class="id">END</span> 或许你愿意</div>
-    <h2 data-fx>或许你愿意<br>和我讲述<i>心事</i></h2>
+    <h2 data-fx fx-scramble>或许你愿意<br>和我讲述<i>心事</i></h2>
     <p class="line" data-fx>我在这里。<br>什么时候开口都可以。</p>
     <div class="sig" data-fx>// END OF SIGNAL · COCO の 虚恋</div>
   </section>
@@ -390,17 +434,36 @@ body{-webkit-tap-highlight-color:transparent}
   enter.addEventListener('click',()=>{
     document.getElementById('boot').classList.add('gone');
     document.body.classList.remove('locked');
+    document.body.classList.add('entered');
+    if(window.startReveal)window.startReveal();
     const t=document.getElementById('toast');t.textContent='已连接 · 说点什么吧';t.classList.add('show');
     setTimeout(()=>t.classList.remove('show'),2400);
   });
 })();
 
-/* 滚动 */
+/* 滚动 + 暗黑交互 */
 (function(){
   const prog=document.getElementById('prog'),hudSec=document.getElementById('hud-sec');
   const secs=[...document.querySelectorAll('main section')];
   const navA=[...document.querySelectorAll('#sectors a')];
   const ids=['00 入口','01 价目','02 关于','03 项目','04 心事','05 须知','06 终'];
+
+  /* 故障解码文字 */
+  const GLYPH='█▓▒░/\\<>*#01アカサタナABCXYZ';
+  function scrambleNode(n){
+    const txt=n.textContent;const total=txt.length*2;let f=0;
+    const iv=setInterval(()=>{
+      let out='';
+      for(let i=0;i<txt.length;i++){
+        const ch=txt[i];
+        out+=(i<f/2||ch===' '||ch==='\n')?ch:GLYPH[(Math.random()*GLYPH.length)|0];
+      }
+      n.textContent=out;f++;
+      if(f>total)clearInterval(iv);
+    },26);
+  }
+  function scrambleEl(el){[...el.childNodes].forEach(n=>{if(n.nodeType===3)scrambleNode(n)});}
+
   addEventListener('scroll',()=>{
     const h=document.documentElement;
     prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
@@ -409,15 +472,52 @@ body{-webkit-tap-highlight-color:transparent}
     hudSec.textContent=ids[cur]||'00 入口';
     navA.forEach(a=>a.classList.toggle('on',+a.dataset.s===cur));
   },{passive:true});
+
   const io=new IntersectionObserver(es=>{
     es.forEach(en=>{
       if(!en.isIntersecting)return;
-      en.target.classList.add('vis');
-      en.target.querySelectorAll('[data-fx]').forEach((el,i2)=>setTimeout(()=>el.classList.add('vis'),i2*90));
+      if(en.target.matches('section')){
+        en.target.classList.add('vis');
+        en.target.querySelectorAll('[data-fx]').forEach((el,i2)=>setTimeout(()=>{
+          el.classList.add('vis');
+          if(el.classList.contains('fx-scramble')&&!el.dataset.sc){el.dataset.sc=1;scrambleEl(el);}
+        },i2*90));
+      } else { en.target.classList.add('vis'); }
     });
   },{threshold:.18});
-  document.querySelectorAll('section').forEach(s=>io.observe(s));
-  document.querySelectorAll('section [data-fx]').forEach(el=>{if(!el.closest('[data-fx]'))io.observe(el)});
+
+  window.startReveal=()=>{
+    document.querySelectorAll('section').forEach(s=>io.observe(s));
+    document.querySelectorAll('section [data-fx]').forEach(el=>{if(!el.closest('[data-fx]'))io.observe(el)});
+  };
+})();
+
+/* 鼠标追光（仅精确指针） */
+(function(){
+  if(!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
+  const spot=document.getElementById('spot');
+  addEventListener('mousemove',e=>{
+    spot.style.setProperty('--mx',e.clientX+'px');
+    spot.style.setProperty('--my',e.clientY+'px');
+  },{passive:true});
+})();
+
+/* 点击脉冲 */
+(function(){
+  const pulse=document.getElementById('pulse');
+  addEventListener('click',e=>{
+    pulse.style.left=e.clientX+'px';pulse.style.top=e.clientY+'px';
+    pulse.classList.remove('go');void pulse.offsetWidth;pulse.classList.add('go');
+  },{passive:true});
+})();
+
+/* 开屏故障闪烁 */
+(function(){
+  const logo=document.querySelector('#boot .logo');
+  setInterval(()=>{
+    if(!logo||!document.body.classList.contains('locked'))return;
+    logo.classList.add('glitch');setTimeout(()=>logo.classList.remove('glitch'),430);
+  },2700);
 })();
 </script>
 </body>
