@@ -3,283 +3,247 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Coco の 虚恋 · 朋友圈</title>
+<title>Coco の 虚恋 · ΕΛΛΑΣ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Noto+Serif+SC:wght@300;600;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#ededed;--card:#fff;--txt:#1a1a1a;--sub:#9a9a9a;--line:#ececec;
-  --link:#576b95;--like:#fa5151;--soft:#f6f6f6;
-  --cover1:#241f38;--cover2:#6a5a8c;--cover3:#a892c4;
+  --bg:#f4f1e8;--ink:#23303f;--blue:#123a63;--gold:#b5873c;--gold2:#d8b25e;
+  --line:rgba(140,108,52,.34);--soft:#fbf9f3;--night:#102a4c;--dim:#5a6270;
+  --display:'Cinzel',serif;--serif:'Cormorant Garamond',serif;--cn:'Noto Serif SC',serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--txt);
-  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased;line-height:1.6}
-::selection{background:#000;color:#fff}
-a{color:var(--link);text-decoration:none}
+body{background:var(--bg);color:var(--ink);font-family:var(--cn);line-height:1.7;
+  -webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(120% 90% at 50% 0%,rgba(255,255,255,.5),transparent 60%),
+             radial-gradient(80% 60% at 80% 100%,rgba(18,58,99,.05),transparent 70%)}
+::selection{background:var(--gold);color:#fff}
+a{color:var(--blue);text-decoration:none}
 
-/* ===== 顶部封面 + 资料 ===== */
-.cover{position:relative;height:210px;
-  background:linear-gradient(155deg,var(--cover1) 0%,var(--cover2) 55%,var(--cover3) 100%)}
-.cover::after{content:'';position:absolute;inset:0;
-  background:radial-gradient(120% 80% at 80% 10%,rgba(255,255,255,.14),transparent 60%)}
-.avatar{position:absolute;right:18px;bottom:-34px;width:70px;height:70px;border-radius:50%;
-  border:3px solid #fff;background:linear-gradient(135deg,#8a7ab8,#c9bfe6);z-index:3;
-  display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;font-weight:700;
-  box-shadow:0 2px 10px rgba(0,0,0,.18)}
-.name{position:absolute;right:100px;bottom:14px;color:#fff;font-size:19px;font-weight:700;
-  text-shadow:0 1px 6px rgba(0,0,0,.45);z-index:3;letter-spacing:.04em}
-.sign{position:absolute;left:18px;bottom:12px;color:rgba(255,255,255,.82);font-size:12.5px;
-  text-shadow:0 1px 4px rgba(0,0,0,.4);z-index:3;max-width:60%}
+/* 固定金色双线外框 */
+.frame{position:fixed;inset:14px;border:1px solid var(--gold);pointer-events:none;z-index:6}
+.frame::after{content:'';position:absolute;inset:4px;border:1px solid rgba(181,135,60,.4)}
 
-/* ===== 动态流 ===== */
-.feed{max-width:600px;margin:54px auto 0;padding:0 12px 40px}
-.post{background:var(--card);border-radius:10px;padding:14px 15px;margin-bottom:13px;
-  box-shadow:0 1px 2px rgba(0,0,0,.05);
-  opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
-.post.in{opacity:1;transform:none}
-.head{display:flex;gap:11px;align-items:flex-start}
-.ava-s{flex:none;width:42px;height:42px;border-radius:8px;
-  background:linear-gradient(135deg,#8a7ab8,#c9bfe6);color:#fff;font-weight:700;font-size:18px;
-  display:flex;align-items:center;justify-content:center}
-.meta{min-width:0;padding-top:1px}
-.nk{font-size:15.5px;font-weight:700;color:#2b2b2b}
-.tm{font-size:11.5px;color:var(--sub);margin-top:2px;letter-spacing:.02em}
-.body{margin-top:9px;font-size:15px;color:#1a1a1a;line-height:1.75;white-space:pre-wrap;word-break:break-word}
-.poem{font-family:"Songti SC","SimSun",serif;font-size:16px;line-height:2;letter-spacing:.18em}
-.imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;max-width:340px}
-.imgs.s1{grid-template-columns:1fr;max-width:230px}
-.imgs.s2{grid-template-columns:1fr 1fr;max-width:230px}
-.tile{aspect-ratio:1/1;border-radius:5px;position:relative;overflow:hidden;
-  transition:transform .3s,filter .3s}
-.tile:hover{transform:scale(1.015);filter:brightness(1.05)}
-.g-night{background:linear-gradient(150deg,#1c2742,#3a4a78)}
-.g-cloud{background:linear-gradient(140deg,#a8c0ff,#d6e6ff)}
-.g-rain{background:linear-gradient(140deg,#9fc9a3,#cdeccd)}
-.g-sunset{background:linear-gradient(140deg,#ff9a9e,#fbc2eb)}
-.g-calm{background:linear-gradient(140deg,#b8c6db,#e6ecf3)}
-.g-dusk{background:linear-gradient(150deg,#4a3f6b,#b89ec9)}
-.tile span{position:absolute;left:7px;bottom:6px;color:rgba(255,255,255,.9);font-size:11px;
-  letter-spacing:.08em;text-shadow:0 1px 3px rgba(0,0,0,.4)}
-.link{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:13px;color:var(--link)}
-.link:hover{text-decoration:underline}
+/* ===== 神庙头 ===== */
+.hero{position:relative;z-index:1;text-align:center;padding:96px 20px 30px}
+.meander{height:24px;margin:0 auto;max-width:520px;background-repeat:repeat-x;background-position:center;
+  border-top:1px solid var(--gold);border-bottom:1px solid var(--gold);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='20' viewBox='0 0 28 20'%3E%3Cpath d='M5,17 L5,4 L23,4 L23,14 L10,14 L10,8 L17,8 L17,11 L13,11' fill='none' stroke='%23b5873c' stroke-width='1.5'/%3E%3C/svg%3E")}
+.greek{font-family:var(--display);color:var(--gold);font-size:20px;letter-spacing:.5em;
+  margin-top:26px;padding-left:.5em}
+.hero h1{font-family:var(--display);font-weight:700;font-size:clamp(40px,9vw,86px);
+  letter-spacing:.12em;color:var(--ink);margin-top:10px;line-height:1.1}
+.hero h1 .sub2{display:block;font-family:var(--cn);font-weight:300;font-size:clamp(16px,3vw,26px);
+  letter-spacing:.28em;color:var(--blue);margin-top:14px}
+.motto{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--gold);
+  letter-spacing:.34em;font-size:clamp(14px,2.4vw,20px);margin-top:18px}
+.sub{font-family:var(--cn);color:var(--blue);letter-spacing:.22em;font-size:clamp(13px,2vw,16px);
+  margin-top:10px;font-weight:300}
 
-/* ===== 点赞 / 评论 栏 ===== */
-.bar{display:flex;gap:22px;margin-top:11px;padding-top:9px;border-top:1px solid var(--line)}
-.bar button{background:none;border:none;cursor:pointer;color:#6b6b6b;font-size:13px;
-  display:inline-flex;align-items:center;gap:5px;font-family:inherit;padding:2px 0;transition:color .2s}
-.bar button:hover{color:#333}
-.bar .ic{font-size:14px;display:inline-block;transition:transform .25s}
-.like.on{color:var(--like)}
-.like.on .ic{animation:pop .35s ease}
-@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.4)}100%{transform:scale(1)}}
+/* 列柱 */
+.colonnade{display:flex;justify-content:center;gap:clamp(14px,4vw,30px);margin-top:38px}
+.col{width:clamp(10px,2.4vw,15px);height:56px;position:relative;border-radius:2px 2px 0 0;
+  background:linear-gradient(90deg,#0e2f57,#1c4a7e 50%,#0e2f57)}
+.col::before{content:'';position:absolute;top:-7px;left:-4px;right:-4px;height:7px;background:var(--gold);border-radius:1px}
+.col::after{content:'';position:absolute;bottom:-5px;left:-3px;right:-3px;height:5px;background:var(--gold)}
+.col{background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.12) 0 1px,transparent 1px 3px),
+  linear-gradient(90deg,#0e2f57,#1c4a7e 50%,#0e2f57)}
 
-/* ===== 评论区 ===== */
-.cbox{margin-top:10px;display:none}
-.cbox.open{display:block}
-.clist{background:var(--soft);border-radius:6px;padding:8px 10px}
-.clist li{list-style:none;font-size:13px;color:#333;padding:4px 0;line-height:1.6}
-.clist li b{color:var(--link);font-weight:600;margin-right:5px}
-.cbox form{display:flex;gap:8px;margin-top:8px}
-.cbox input{flex:1;border:1px solid var(--line);border-radius:18px;padding:8px 14px;font-size:13px;
-  font-family:inherit;outline:none;background:#fff}
-.cbox input:focus{border-color:#c9c9c9}
-.cbox button{flex:none;border:none;background:var(--link);color:#fff;border-radius:18px;
-  padding:0 16px;font-size:13px;cursor:pointer;font-family:inherit}
-.cbox button:hover{opacity:.9}
+/* ===== 石碑 ===== */
+main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:40px 22px 20px}
+.tablet{position:relative;background:var(--soft);border:1px solid var(--line);
+  padding:36px clamp(22px,5vw,42px) 32px;margin-bottom:30px;
+  box-shadow:0 8px 30px rgba(20,30,50,.08);
+  opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s ease}
+.tablet.in{opacity:1;transform:none}
+.tablet::before{content:'';position:absolute;inset:7px;border:1px solid var(--line);pointer-events:none}
+.tablet:hover{border-color:var(--gold);box-shadow:0 10px 36px rgba(140,108,52,.18);transform:translateY(-3px)}
+.lab{display:flex;align-items:center;font-family:var(--display);font-size:12px;letter-spacing:.28em;
+  color:var(--gold);text-transform:uppercase}
+.gnum{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+  border:1px solid var(--gold);color:var(--gold);font-size:13px;margin-right:12px;flex:none}
+.tablet h2{font-family:var(--cn);font-weight:600;font-size:clamp(24px,4.6vw,40px);letter-spacing:.04em;
+  color:var(--ink);margin-top:14px;line-height:1.5}
+.tablet h2 em{font-style:normal;color:var(--gold)}
+.lead{margin-top:10px;color:var(--dim);font-size:14px;letter-spacing:.04em}
 
-.foot{text-align:center;color:var(--sub);font-size:12px;padding:6px 0 34px;letter-spacing:.05em}
-.foot a{margin-left:4px}
+/* 价目 */
+.prices{display:grid;grid-template-columns:1fr 1fr;margin-top:22px;border-top:1px solid var(--line)}
+@media(max-width:600px){.prices{grid-template-columns:1fr}}
+.price{padding:22px 20px;border-bottom:1px solid var(--line)}
+.price+.price{border-left:1px solid var(--line)}
+@media(max-width:600px){.price+.price{border-left:none}}
+.price .tag{font-family:var(--display);font-size:11px;letter-spacing:.25em;color:var(--gold)}
+.price .num{font-family:var(--display);font-weight:700;font-size:clamp(40px,7vw,62px);color:var(--blue);
+  line-height:1;margin-top:10px}
+.price .num small{font-family:var(--serif);font-weight:400;font-size:16px;color:var(--ink);letter-spacing:.1em;margin-left:6px}
+.price p{margin-top:12px;font-size:13.5px;color:var(--dim);line-height:1.95}
+
+/* 关于（铭文式） */
+.insc{margin-top:22px;text-align:center}
+.insc .row{font-family:var(--display);font-size:clamp(13px,2vw,16px);letter-spacing:.18em;color:var(--ink);
+  padding:11px 0;border-bottom:1px solid var(--line)}
+.insc .row:last-child{border-bottom:none}
+.insc .row b{color:var(--gold);font-weight:600;margin:0 .5em}
+.insc .note{font-family:var(--cn);color:var(--blue);font-weight:300;letter-spacing:.14em;
+  margin-top:16px;font-size:14px}
+
+/* 项目 */
+.svc{margin-top:20px}
+.svc .item{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.svc .item:last-child{border-bottom:none}
+.svc .gl{font-family:var(--display);color:var(--gold);font-size:18px;flex:none;width:24px;text-align:center}
+.svc h3{font-family:var(--cn);font-weight:600;font-size:18px;color:var(--blue)}
+.svc h3 small{font-family:var(--display);font-size:11px;color:var(--gold);letter-spacing:.2em;margin-left:8px}
+.svc p{margin-top:6px;font-size:13.5px;color:var(--dim);line-height:1.95}
+
+/* 须知 */
+.rules{margin-top:18px}
+.rule{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.rule:last-child{border-bottom:none}
+.rule .gl{font-family:var(--display);color:var(--gold);font-size:16px;flex:none;width:22px;text-align:center}
+.rule .tx{font-size:14px;color:#3a4654;line-height:1.95}
+.rule .tx b{color:var(--blue);font-weight:600}
+
+/* 夜之石碑（心事） */
+.tablet.night{background:var(--night);border-color:rgba(216,178,94,.42)}
+.tablet.night::before{border-color:rgba(216,178,94,.32)}
+.tablet.night h2{color:#f3e9d2}
+.tablet.night h2 em{color:var(--gold2)}
+.poem{margin-top:18px;text-align:center;font-family:var(--cn);font-weight:300;
+  font-size:clamp(16px,2.4vw,21px);letter-spacing:.32em;line-height:2.6;color:#ecdfc2}
+.poem b{font-weight:400;color:var(--gold2)}
+
+/* 文档链接 */
+.doc-link{display:inline-flex;align-items:center;gap:6px;margin-top:20px;color:var(--blue);
+  font-family:var(--display);font-size:12.5px;letter-spacing:.18em;border-bottom:1px solid var(--gold);
+  padding-bottom:3px;transition:.3s}
+.doc-link:hover{color:var(--gold);border-color:var(--blue)}
+
+/* 页脚 */
+.foot{position:relative;z-index:1;text-align:center;padding:30px 20px 64px}
+.foot .telos{font-family:var(--display);letter-spacing:.55em;color:var(--gold);font-size:14px;
+  padding-left:.55em;margin-bottom:16px}
+.foot .sig{font-family:var(--cn);font-weight:300;font-size:12.5px;letter-spacing:.12em;color:var(--dim);margin-top:8px}
+.foot a{color:var(--blue)}
 
 @media(max-width:520px){
-  .cover{height:180px}
-  .name{font-size:17px;right:92px}
-  .sign{font-size:11.5px;max-width:55%}
-  .feed{margin-top:48px}
-  .body{font-size:14.5px}
+  .frame{inset:8px}
+  .hero{padding:74px 16px 24px}
+  .colonnade{margin-top:28px}
+  main{padding:26px 16px 12px}
+  .tablet{padding:30px 18px 26px}
 }
 </style>
 </head>
 <body>
+<div class="frame"></div>
 
-<div class="cover">
-  <div class="sign">或许你愿意和我讲述心事</div>
-  <div class="name">Coco</div>
-  <div class="avatar">C</div>
-</div>
+<header class="hero">
+  <div class="meander"></div>
+  <div class="greek">ΚΟΚΩ</div>
+  <h1>COCO<span class="sub2">· 虚恋</span></h1>
+  <div class="motto">ΚΑΛΟΣ ΚΑΓΑΘΟΣ</div>
+  <div class="sub">或许你愿意和我讲述心事</div>
+  <div class="colonnade">
+    <div class="col"></div><div class="col"></div><div class="col"></div>
+    <div class="col"></div><div class="col"></div><div class="col"></div><div class="col"></div>
+  </div>
+</header>
 
-<main class="feed">
+<main>
 
-  <!-- 开场 -->
-  <section class="post">
-    <div class="head">
-      <div class="ava-s">C</div>
-      <div class="meta"><div class="nk">Coco</div><div class="tm">今天 22:08</div></div>
+  <!-- Α 价目 -->
+  <section class="tablet">
+    <div class="lab"><span class="gnum">Α</span> 价目 · PRICE</div>
+    <h2>把这段时间 <em>交给我</em></h2>
+    <p class="lead">明码标价，不绕弯子。以完整文档为准。</p>
+    <div class="prices">
+      <div class="price">
+        <div class="tag">SKY · 虚 / 按小时</div>
+        <div class="num">48<small>/ h</small></div>
+        <p>一小时起约。跑图、看风景，或什么都不做——时间由你。</p>
+      </div>
+      <div class="price">
+        <div class="tag">SKY · 虚 / 按半小时</div>
+        <div class="num">30<small>/ 半</small></div>
+        <p>半小时短叙。只想有人听你说几句，然后各自散场也行。</p>
+      </div>
     </div>
-    <div class="body">或许你愿意和我讲述心事。
-樱花树下的时间被拉长了，或许你记得我们的约定呢。</div>
-    <div class="imgs s1"><div class="tile g-night"><span>月 · 夜</span></div></div>
-    <div class="bar">
-      <button class="like"><span class="ic">🤍</span><span class="tx">赞</span><i class="cnt" data-n="23">23</i></button>
-      <button class="cmt">💬 评论</button>
-    </div>
-    <div class="cbox"><ul class="clist">
-      <li><b>光遇小友</b>愿意听你说～</li>
-      <li><b>夜行</b>时间确实会被拉长</li>
-    </ul>
-    <form><input placeholder="说点什么…" maxlength="120"><button type="submit">发送</button></form></div>
+    <a class="doc-link" href="https://docs.qq.com/doc/DYWdMaHh4bURCT2pj" target="_blank" rel="noopener">完整文档 ↗</a>
   </section>
 
-  <!-- 价目 -->
-  <section class="post">
-    <div class="head">
-      <div class="ava-s">C</div>
-      <div class="meta"><div class="nk">Coco</div><div class="tm">今天 21:36</div></div>
+  <!-- Β 关于 -->
+  <section class="tablet">
+    <div class="lab"><span class="gnum">Β</span> 关于 · PROFILE</div>
+    <h2>我是 <em>Coco</em></h2>
+    <div class="insc">
+      <div class="row">NAME<b>·</b>Coco</div>
+      <div class="row">AGE<b>·</b>21</div>
+      <div class="row">MBTI<b>·</b>ENFP</div>
+      <div class="row">IP<b>·</b>上海</div>
+      <div class="row">副风格<b>·</b>偏执 · 多疑 · 虚</div>
+      <div class="note">还有很多时间，可以慢慢了解彼此。</div>
     </div>
-    <div class="body">营业时间，明码标价，不绕弯子～
-光遇陪跑：48 / 小时（一小时起约）
-短叙：30 / 半小时（只想有人说几句话的时刻）</div>
-    <div class="imgs s2">
-      <div class="tile g-cloud"><span>云野</span></div>
-      <div class="tile g-sunset"><span>霞谷</span></div>
-    </div>
-    <a class="link" href="https://docs.qq.com/doc/DYWdMaHh4bURCT2pj" target="_blank" rel="noopener">完整文档 ↗</a>
-    <div class="bar">
-      <button class="like"><span class="ic">🤍</span><span class="tx">赞</span><i class="cnt" data-n="12">12</i></button>
-      <button class="cmt">💬 评论</button>
-    </div>
-    <div class="cbox"><ul class="clist">
-      <li><b>路过</b>价格很友好惹</li>
-    </ul>
-    <form><input placeholder="说点什么…" maxlength="120"><button type="submit">发送</button></form></div>
   </section>
 
-  <!-- 关于 -->
-  <section class="post">
-    <div class="head">
-      <div class="ava-s">C</div>
-      <div class="meta"><div class="nk">Coco</div><div class="tm">昨天 20:14</div></div>
+  <!-- Γ 项目 -->
+  <section class="tablet">
+    <div class="lab"><span class="gnum">Γ</span> 项目 · SERVICE</div>
+    <h2>营业 <em>项目</em></h2>
+    <div class="svc">
+      <div class="item"><div class="gl">Α</div><div>
+        <h3>光遇陪跑<small>SKY</small></h3>
+        <p>跑图、打卡、看风景。你想去的几处地方，我陪你走一遍，顺手替你记下来。</p></div></div>
+      <div class="item"><div class="gl">Β</div><div>
+        <h3>讲述心事<small>TALK</small></h3>
+        <p>想说就说，不想说也行。废话、牢骚、忽然冒出来的念头，都接得住。</p></div></div>
+      <div class="item"><div class="gl">Γ</div><div>
+        <h3>角色扮演<small>STYLE</small></h3>
+        <p>偏执、多疑、虚——想要哪种氛围，提前说，我会照着演。</p></div></div>
     </div>
-    <div class="body">我是 Coco。
-21 / ENFP / 上海。
-副风格：偏执 · 多疑 · 虚。
-还有很多时间，可以慢慢了解彼此。</div>
-    <div class="imgs s1"><div class="tile g-calm"><span>日常</span></div></div>
-    <div class="bar">
-      <button class="like"><span class="ic">🤍</span><span class="tx">赞</span><i class="cnt" data-n="31">31</i></button>
-      <button class="cmt">💬 评论</button>
-    </div>
-    <div class="cbox"><ul class="clist">
-      <li><b>同类</b>ENFP 握爪</li>
-    </ul>
-    <form><input placeholder="说点什么…" maxlength="120"><button type="submit">发送</button></form></div>
+    <a class="doc-link" href="https://docs.qq.com/doc/DYWdMaHh4bURCT2pj" target="_blank" rel="noopener">完整文档 ↗</a>
   </section>
 
-  <!-- 项目 -->
-  <section class="post">
-    <div class="head">
-      <div class="ava-s">C</div>
-      <div class="meta"><div class="nk">Coco</div><div class="tm">昨天 19:02</div></div>
-    </div>
-    <div class="body">最近在做的几件事：
-· 光遇陪跑 SKY —— 跑图、打卡、看风景
-· 讲述心事 TALK —— 想说就说，不想说也行
-· 角色扮演 STYLE —— 偏执、多疑、虚，按你想要的演</div>
-    <div class="imgs">
-      <div class="tile g-cloud"><span>云野</span></div>
-      <div class="tile g-rain"><span>雨林</span></div>
-      <div class="tile g-sunset"><span>霞谷</span></div>
-    </div>
-    <div class="bar">
-      <button class="like"><span class="ic">🤍</span><span class="tx">赞</span><i class="cnt" data-n="18">18</i></button>
-      <button class="cmt">💬 评论</button>
-    </div>
-    <div class="cbox"><ul class="clist">
-      <li><b>萌新</b>光遇带带我 🙏</li>
-    </ul>
-    <form><input placeholder="说点什么…" maxlength="120"><button type="submit">发送</button></form></div>
+  <!-- Δ 心事（夜之石碑） -->
+  <section class="tablet night">
+    <div class="lab"><span class="gnum">Δ</span> 心事 · CONFIDE</div>
+    <h2>说给 <em>我听</em></h2>
+    <div class="poem">你是藏在云层里的<b>月光</b><br>
+      不经意地落在我的心房<br>
+      从此这一方小小天地<br>
+      只容得下<b>你的模样</b></div>
   </section>
 
-  <!-- 心事 -->
-  <section class="post">
-    <div class="head">
-      <div class="ava-s">C</div>
-      <div class="meta"><div class="nk">Coco</div><div class="tm">前天 23:41</div></div>
+  <!-- Ε 须知 -->
+  <section class="tablet">
+    <div class="lab"><span class="gnum">Ε</span> 须知 · NOTICE</div>
+    <h2>请 <em>仔细阅读</em></h2>
+    <div class="rules">
+      <div class="rule"><div class="gl">Α</div><div class="tx">请<b>提前告知你的雷点</b>。如未提前说明，默认无雷点，触雷概不负责。</div></div>
+      <div class="rule"><div class="gl">Β</div><div class="tx"><b>不要传播我们的聊天内容</b>。见面之后，请尽情享受这场约会。</div></div>
+      <div class="rule"><div class="gl">Γ</div><div class="tx">若本人不是你喜欢的类型，请在约定时间内<b>联系派单</b>，逾时不再处理。</div></div>
+      <div class="rule"><div class="gl">Δ</div><div class="tx">完整条款以文档为准 —— <b>只对你心动</b>。</div></div>
     </div>
-    <div class="body poem">你是藏在云层里的月光
-不经意地落在我的心房
-从此这一方小小天地
-只容得下你的模样</div>
-    <div class="imgs s1"><div class="tile g-night"><span>月光</span></div></div>
-    <div class="bar">
-      <button class="like"><span class="ic">🤍</span><span class="tx">赞</span><i class="cnt" data-n="47">47</i></button>
-      <button class="cmt">💬 评论</button>
-    </div>
-    <div class="cbox"><ul class="clist">
-      <li><b>月亮</b>这句好美</li>
-      <li><b>匿名</b>只容得下你的模样 🌙</li>
-    </ul>
-    <form><input placeholder="说点什么…" maxlength="120"><button type="submit">发送</button></form></div>
+    <a class="doc-link" href="https://docs.qq.com/doc/DYWdMaHh4bURCT2pj" target="_blank" rel="noopener">查看全部须知 ↗</a>
   </section>
 
-  <!-- 须知 -->
-  <section class="post">
-    <div class="head">
-      <div class="ava-s">C</div>
-      <div class="meta"><div class="nk">Coco</div><div class="tm">前天 18:30</div></div>
-    </div>
-    <div class="body">见面须知，请仔细阅读：
-1. 提前告知你的雷点，未说明默认无雷点。
-2. 不要传播我们的聊天内容。
-3. 不喜欢可在约定时间内联系派单，逾时不再处理。
-4. 完整条款以文档为准 —— 只对你心动。</div>
-    <a class="link" href="https://docs.qq.com/doc/DYWdMaHh4bURCT2pj" target="_blank" rel="noopener">查看全部须知 ↗</a>
-    <div class="bar">
-      <button class="like"><span class="ic">🤍</span><span class="tx">赞</span><i class="cnt" data-n="9">9</i></button>
-      <button class="cmt">💬 评论</button>
-    </div>
-    <div class="cbox"><ul class="clist">
-      <li><b>乖</b>收到，会注意的</li>
-    </ul>
-    <form><input placeholder="说点什么…" maxlength="120"><button type="submit">发送</button></form></div>
-  </section>
-
-  <div class="foot">Coco の 虚恋 · 或许你愿意和我讲述心事<a href="https://docs.qq.com/doc/DYWdMaHh4bURCT2pj" target="_blank" rel="noopener">完整文档 ↗</a></div>
 </main>
 
+<footer class="foot">
+  <div class="meander"></div>
+  <div class="telos" style="margin-top:22px">ΤΕΛΟΣ</div>
+  <div class="sig">Coco の 虚恋 · 或许你愿意和我讲述心事<br>
+    <a href="https://docs.qq.com/doc/DYWdMaHh4bURCT2pj" target="_blank" rel="noopener">完整文档 ↗</a></div>
+</footer>
+
 <script>
-/* 点赞 */
-document.querySelectorAll('.like').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const ic=btn.querySelector('.ic'),cnt=btn.querySelector('.cnt');
-    const on=btn.classList.toggle('on');
-    cnt.textContent=parseInt(cnt.dataset.n,10)+(on?1:-1);
-    ic.textContent=on?'❤️':'🤍';
-  });
-});
-/* 评论展开 */
-document.querySelectorAll('.cmt').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const box=btn.closest('.post').querySelector('.cbox');
-    box.classList.toggle('open');
-    if(box.classList.contains('open'))box.querySelector('input').focus();
-  });
-});
-/* 发表评论（本地） */
-function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-document.querySelectorAll('.cbox form').forEach(f=>{
-  f.addEventListener('submit',e=>{
-    e.preventDefault();
-    const inp=f.querySelector('input'),v=inp.value.trim();if(!v)return;
-    const li=document.createElement('li');li.innerHTML='<b>我</b> '+esc(v);
-    f.closest('.cbox').querySelector('.clist').appendChild(li);inp.value='';
-  });
-});
-/* 进入视口轻浮现 */
 const io=new IntersectionObserver(es=>{
   es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
 },{threshold:.12});
-document.querySelectorAll('.post').forEach(p=>io.observe(p));
+document.querySelectorAll('.tablet').forEach(p=>io.observe(p));
 </script>
 </body>
 </html>
