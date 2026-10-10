@@ -56,7 +56,13 @@ a{color:var(--ink);text-decoration:none}
 #dial .rn{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:.08em}
 #dial .nm{font-family:var(--cn);font-weight:300;font-size:12.5px;letter-spacing:.3em;opacity:.82}
 #dial .dm{fill:var(--ink);opacity:.85}
-#dial .mod{cursor:pointer}
+#dial .mod{cursor:pointer;transition:opacity .3s}
+#dial .mod.on .rn{font-size:23px;font-weight:700}
+#dial .mod.on .nm{fill:#fff;opacity:1;letter-spacing:.36em}
+#dial .mod.on .dm{fill:#fff;opacity:1}
+#dial .mod:not(.on) .rn,#dial .mod:not(.on) .nm{opacity:.7}
+#hand{stroke:var(--ink);stroke-width:2;stroke-linecap:round;
+  transform-box:view-box;transform-origin:50% 50%;transition:transform .5s cubic-bezier(.22,.8,.3,1)}
 .ptr{fill:var(--ink)}
 .ctr{fill:var(--ink)}
 .readout{margin-top:18px;font-family:var(--display);font-size:clamp(17px,3.4vw,24px);
@@ -188,6 +194,7 @@ a{color:var(--ink);text-decoration:none}
       <circle class="ring2" cx="160" cy="160" r="96"/>
       <g id="ticks"></g>
       <g id="dial"></g>
+      <line id="hand" x1="160" y1="160" x2="160" y2="118"/>
       <path class="ptr" d="M160 22 L167 40 L160 35 L153 40 Z"/>
       <circle class="ctr" cx="160" cy="160" r="3.4"/>
       <text class="rn" x="160" y="196" text-anchor="middle" style="font-size:11px;letter-spacing:.4em;opacity:.75">COCO</text>
@@ -349,15 +356,21 @@ MODS.forEach((m,i)=>{
 });
 
 const clockEl=document.getElementById('clock');
+const handEl=document.getElementById('hand');
+const modEls=[...document.querySelectorAll('#dial .mod')];
 const rR=document.getElementById('r-roman'), rN=document.getElementById('r-name'), rT=document.getElementById('r-time');
 const panels=[...document.querySelectorAll('.panel')];
-let cur=0, tgt=0, dragging=false, prevAng=0, dragMoved=0, curPanel=0;
+let cur=0, tgt=0, dragging=false, prevAng=0, dragMoved=0, curPanel=0, lastHi=-1;
 
 const idxOf=r=>((Math.round(-r/STEP))%N+N)%N;
+function highlight(i){ if(i===lastHi)return; lastHi=i;
+  modEls.forEach((m,k)=>m.classList.toggle('on',k===i));
+  handEl.style.transform=`rotate(${i*STEP}deg)`;
+}
 function readout(i){rR.textContent=MODS[i].rn; rN.textContent=MODS[i].name; rT.textContent='TIME '+MODS[i].time;}
 function switchTo(i,burst){
   if(i===curPanel&&burst!==true) return void readout(i);
-  curPanel=i; readout(i);
+  curPanel=i; readout(i); highlight(i);
   panels.forEach((p,k)=>p.classList.toggle('active',k===i));
   if(burst){const b=clockEl.getBoundingClientRect();
     Water.burst(b.left+b.width/2,b.top+b.height/2);}
@@ -369,7 +382,7 @@ clockEl.addEventListener('pointerdown',e=>{
   clockEl.setPointerCapture(e.pointerId);
 });
 clockEl.addEventListener('pointermove',e=>{
-  Water.disturb(e.clientX,e.clientY,8,240);
+  Water.disturb(e.clientX,e.clientY,8,300);
   if(!dragging)return;
   let d=angOf(e)-prevAng;
   if(d>180)d-=360; if(d<-180)d+=360;
@@ -402,9 +415,10 @@ addEventListener('keydown',e=>{
     if(i!==curPanel)switchTo(i,true);
   }
   dial.style.transform=`rotate(${cur}deg)`;
+  highlight(idxOf(cur));
   requestAnimationFrame(loop);
 })();
-readout(0);
+readout(0); highlight(0);
 
 /* ================= 水波纹（波动方程模拟） ================= */
 const Water=(()=>{
@@ -479,8 +493,8 @@ const Water=(()=>{
   addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(build,220);});
   /* 环境涟漪：空闲时偶有一滴 */
   setInterval(()=>{
-    if(energy<=0&&tex) disturb(Math.random()*innerWidth,Math.random()*innerHeight,24,420);
-  },4200);
+    if(energy<=0&&tex) disturb(Math.random()*innerWidth,Math.random()*innerHeight,26,560);
+  },3000);
   return {disturb,burst,get energy(){return energy}};
 })();
 
