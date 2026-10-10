@@ -52,6 +52,10 @@ a{color:var(--ink);text-decoration:none}
 /* 可动的表盘内胆：随指针做细微视差倾斜，轴（外框）不动 */
 .clock .face{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform;
   transform:rotateX(0deg) rotateY(0deg)}
+/* 表盘文字衬底：压暗中部，提升数字 / 中文清晰度 */
+.clock .face::before{content:'';position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  transform:translateZ(12px);
+  background:radial-gradient(circle at 50% 46%,rgba(7,7,7,.66) 0%,rgba(7,7,7,.40) 56%,rgba(7,7,7,.16) 100%)}
 .clock:active{cursor:grabbing}
 /* 金属表圈（模拟厚度） */
 .clock::before{content:'';position:absolute;inset:-8px;border-radius:50%;
@@ -62,34 +66,40 @@ a{color:var(--ink);text-decoration:none}
   box-shadow:inset 0 0 32px rgba(0,0,0,.78);transform:translateZ(1px)}
 /* 表盘照片：压在表壳之上、刻度之下，形成纵深 */
 .clock .cface{position:absolute;inset:9%;width:82%;height:82%;border-radius:50%;object-fit:cover;
-  opacity:.85;filter:grayscale(.32) contrast(1.06) brightness(1.03);
+  opacity:.8;filter:grayscale(.38) contrast(1.12) brightness(.96);
   transform:translateZ(4px);pointer-events:none}
 .clock svg{position:relative;width:100%;height:100%;display:block;color:var(--ink);
   transform:translateZ(22px)}
 .clock circle.ring{fill:none;stroke:var(--ink);stroke-width:1.4}
 .clock circle.ring2{fill:none;stroke:var(--ink);stroke-width:.6;opacity:.4}
-.clock line.tk{stroke:var(--ink);stroke-width:.7;opacity:.34}
-.clock line.tk.maj{stroke-width:1.6;opacity:.9}
+.clock line.tk{stroke:var(--ink);stroke-width:.8;opacity:.42}
+.clock line.tk.maj{stroke-width:1.7;opacity:1}
 #ticks,#dial{transform-box:view-box;transform-origin:50% 50%;will-change:transform}
 #dial text{fill:var(--ink)}
-#dial .rn{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:.08em}
-#dial .nm{font-family:var(--cn);font-weight:300;font-size:12.5px;letter-spacing:.3em;opacity:.82}
-#dial .dm{fill:var(--ink);opacity:.85}
+/* 罗马数字：加粗 + 暗色描边光晕，确保压在照片上也清晰 */
+#dial .rn{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.06em;
+  stroke:#0b0b0b;stroke-width:.55px;paint-order:stroke fill;stroke-linejoin:round}
+/* 中文模块名：提高字重与对比 */
+#dial .nm{font-family:var(--cn);font-weight:400;font-size:12.5px;letter-spacing:.32em;opacity:.92}
+#dial .dm{fill:var(--ink);opacity:.9}
 #dial .mod{cursor:pointer;transition:opacity .3s}
-#dial .mod.on .rn{font-size:23px;font-weight:700}
-#dial .mod.on .nm{fill:#fff;opacity:1;letter-spacing:.36em}
+#dial .mod.on .rn{font-size:24px;font-weight:700}
+#dial .mod.on .nm{fill:#fff;opacity:1;letter-spacing:.4em;font-weight:500}
 #dial .mod.on .dm{fill:#fff;opacity:1}
-#dial .mod:not(.on) .rn,#dial .mod:not(.on) .nm{opacity:.7}
+#dial .mod:not(.on) .rn,#dial .mod:not(.on) .nm{opacity:.82}
 #hand{stroke:var(--ink);stroke-width:2;stroke-linecap:round;
   transform-box:view-box;transform-origin:50% 50%;transition:transform .5s cubic-bezier(.22,.8,.3,1)}
 .ptr{fill:var(--ink)}
 .ctr{fill:var(--ink)}
-.readout{margin-top:18px;font-family:var(--display);font-size:clamp(17px,3.4vw,24px);
-  letter-spacing:.3em;color:var(--ink)}
-.readout .sep{opacity:.4;margin:0 .4em}
-.dtime{font-family:var(--display);font-size:12px;letter-spacing:.42em;color:var(--muted);margin-top:6px}
-.hint{font-family:var(--cn);font-weight:300;font-size:12.5px;letter-spacing:.2em;
-  color:var(--muted);margin-top:12px}
+.now-lab{font-family:var(--display);font-size:10.5px;letter-spacing:.42em;color:var(--muted);
+  text-transform:uppercase;margin-top:18px;opacity:.7}
+.readout{margin:14px auto 0;max-width:260px;padding-top:14px;border-top:1px solid var(--line);
+  font-family:var(--display);font-size:clamp(19px,4vw,27px);letter-spacing:.26em;color:var(--ink);
+  text-shadow:0 2px 18px rgba(0,0,0,.55)}
+.readout .sep{opacity:.4;margin:0 .35em}
+.dtime{font-family:var(--display);font-size:11.5px;letter-spacing:.4em;color:var(--muted);margin-top:8px}
+.hint{font-family:var(--cn);font-weight:300;font-size:12.5px;letter-spacing:.16em;
+  color:var(--muted);margin-top:16px;opacity:.85}
 
 /* ===== 模块面板 ===== */
 .stage{position:relative;z-index:3;max-width:760px;margin:0 auto;padding:30px 22px 10px}
@@ -223,6 +233,7 @@ a{color:var(--ink);text-decoration:none}
     </div>
   </div>
   </div>
+  <div class="now-lab">当前时刻 · NOW</div>
   <div class="readout"><span id="r-roman">XII</span><span class="sep">·</span><span id="r-name">入口</span></div>
   <div class="dtime" id="r-time">TIME 12:00</div>
   <div class="hint">拖动表盘 · 滚轮 · 或点数字 —— 转到对应时刻，即进入那一页</div>
