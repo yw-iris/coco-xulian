@@ -116,10 +116,6 @@ main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:42px 22px
 .banner{display:flex;justify-content:center;margin:6px 0 26px}
 .banner img{width:min(82vw,520px);mix-blend-mode:screen;opacity:.92}
 .banner.tall img{width:min(66vw,400px)}
-.foot .verse{font-family:var(--cn);font-weight:300;font-size:12.5px;letter-spacing:.16em;
-  color:var(--ink2);line-height:2.1;margin-top:16px}
-.foot .script{font-family:'Mrs Saint Delafield',cursive;font-size:clamp(30px,6vw,40px);
-  color:var(--ink);margin-top:10px;opacity:.92}
 
 /* 文档链接 */
 .doc-link{display:inline-flex;align-items:center;gap:6px;margin-top:20px;color:var(--ink);
@@ -128,7 +124,14 @@ main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:42px 22px
 .doc-link:hover{background:var(--ink);color:var(--bg)}
 
 /* 页脚 */
-.foot{position:relative;z-index:1;text-align:center;padding:30px 20px 64px}
+.foot{position:relative;z-index:1;text-align:center;padding:30px 20px 64px;overflow:hidden}
+.foot>:not(.starbg){position:relative;z-index:1}
+.foot .starbg{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);
+  width:min(72vw,440px);mix-blend-mode:screen;opacity:.4;pointer-events:none}
+.foot .verse{font-family:var(--cn);font-weight:300;font-size:12.5px;letter-spacing:.16em;
+  color:var(--ink2);line-height:2.1;margin-top:16px}
+.foot .script{font-family:'Mrs Saint Delafield',cursive;font-size:clamp(30px,6vw,40px);
+  color:var(--ink);margin-top:10px;opacity:.92}
 .meander{height:20px;max-width:520px;margin:0 auto;background-repeat:repeat-x;background-position:center;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='20' viewBox='0 0 28 20'%3E%3Cpath d='M5,17 L5,4 L23,4 L23,14 L10,14 L10,8 L17,8 L17,11 L13,11' fill='none' stroke='%23e9e6dc' stroke-width='1.5'/%3E%3C/svg%3E");opacity:.75}
 .foot .telos{font-family:var(--display);letter-spacing:.55em;color:var(--ink);font-size:14px;
@@ -148,7 +151,7 @@ main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:42px 22px
 <div class="frame"></div>
 
 <header class="hero">
-  <img class="hero-bg" src="assets/starcross.jpg" alt="" aria-hidden="true">
+  <img class="hero-bg" src="assets/angel.jpg" alt="" aria-hidden="true">
   <svg class="portico" viewBox="0 0 640 300" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
     <defs>
       <pattern id="dentil" width="14" height="9" patternUnits="userSpaceOnUse">
@@ -256,8 +259,6 @@ main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:42px 22px
     <a class="doc-link" href="https://docs.qq.com/doc/DYWdMaHh4bURCT2pj" target="_blank" rel="noopener">完整文档 ↗</a>
   </section>
 
-  <div class="banner tall" aria-hidden="true"><img src="assets/angel.jpg" alt=""></div>
-
   <!-- Δ 心事（月光石碑 · 暗黑中的亮碑） -->
   <section class="tablet night">
     <img class="night-bg" src="assets/comet.jpg" alt="" aria-hidden="true">
@@ -285,6 +286,7 @@ main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:42px 22px
 </main>
 
 <footer class="foot">
+  <img class="starbg" src="assets/starcross.jpg" alt="" aria-hidden="true">
   <div class="meander"></div>
   <div class="telos" style="margin-top:22px">ΤΕΛΟΣ</div>
   <div class="verse">之后我们推翻了所有的「未来学」假设，<br>并再次将世界从那命运的荒芜河床中拯救出来</div>
