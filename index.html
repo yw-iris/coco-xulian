@@ -23,7 +23,7 @@ a{color:var(--ink);text-decoration:none}
 
 /* ===== 水波纹底层（鼠标 / 手势触发） ===== */
 #water{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;
-  mix-blend-mode:screen;opacity:.5}
+  mix-blend-mode:screen;opacity:.4}
 
 /* 固定双线外框 */
 .frame{position:fixed;inset:14px;border:1px solid var(--ink);pointer-events:none;z-index:6;opacity:.8}
@@ -41,12 +41,27 @@ a{color:var(--ink);text-decoration:none}
 
 /* ===== 时钟轮盘 ===== */
 .hub{position:relative;z-index:3;text-align:center;padding:26px 16px 6px}
+.clock-stage{perspective:1000px;perspective-origin:50% 42%;display:inline-block;vertical-align:top}
 .clock{position:relative;width:min(78vw,350px);height:min(78vw,350px);margin:0 auto;
-  touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+  touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;
+  transform-style:preserve-3d;will-change:transform;
+  background:radial-gradient(circle at 50% 38%,#1d1d1d 0%,#0c0c0c 72%);
+  border-radius:50%;
+  box-shadow:0 0 0 5px #0a0a0a, 0 24px 50px rgba(0,0,0,.66), inset 0 0 36px rgba(0,0,0,.7)}
 .clock:active{cursor:grabbing}
-.clock .cface{position:absolute;inset:7%;width:86%;height:86%;border-radius:50%;object-fit:cover;
-  mix-blend-mode:screen;opacity:.34;filter:grayscale(1) contrast(1.06);pointer-events:none}
-.clock svg{position:relative;width:100%;height:100%;display:block;color:var(--ink)}
+/* 金属表圈（模拟厚度） */
+.clock::before{content:'';position:absolute;inset:-8px;border-radius:50%;
+  background:conic-gradient(from 210deg,#464646,#0d0d0d,#3a3a3a,#0d0d0d,#464646,#0d0d0d,#3a3a3a,#0d0d0d,#464646);
+  transform:translateZ(-14px);box-shadow:0 0 0 1px #000, 0 16px 34px rgba(0,0,0,.55)}
+/* 内圈压暗 */
+.clock::after{content:'';position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  box-shadow:inset 0 0 32px rgba(0,0,0,.78);transform:translateZ(1px)}
+/* 表盘照片：压在表壳之上、刻度之下，形成纵深 */
+.clock .cface{position:absolute;inset:9%;width:82%;height:82%;border-radius:50%;object-fit:cover;
+  opacity:.85;filter:grayscale(.32) contrast(1.06) brightness(1.03);
+  transform:translateZ(4px);pointer-events:none}
+.clock svg{position:relative;width:100%;height:100%;display:block;color:var(--ink);
+  transform:translateZ(22px)}
 .clock circle.ring{fill:none;stroke:var(--ink);stroke-width:1.4}
 .clock circle.ring2{fill:none;stroke:var(--ink);stroke-width:.6;opacity:.4}
 .clock line.tk{stroke:var(--ink);stroke-width:.7;opacity:.34}
@@ -186,6 +201,7 @@ a{color:var(--ink);text-decoration:none}
 
 <!-- ===== 时钟轮盘 ===== -->
 <section class="hub">
+  <div class="clock-stage">
   <div class="clock" id="clock">
     <img class="cface" src="assets/clock.jpg" alt="" aria-hidden="true">
     <svg viewBox="0 0 320 320" aria-hidden="true">
@@ -199,6 +215,7 @@ a{color:var(--ink);text-decoration:none}
       <circle class="ctr" cx="160" cy="160" r="3.4"/>
       <text class="rn" x="160" y="196" text-anchor="middle" style="font-size:11px;letter-spacing:.4em;opacity:.75">COCO</text>
     </svg>
+  </div>
   </div>
   <div class="readout"><span id="r-roman">XII</span><span class="sep">·</span><span id="r-name">入口</span></div>
   <div class="dtime" id="r-time">TIME 12:00</div>
@@ -419,6 +436,20 @@ addEventListener('keydown',e=>{
   requestAnimationFrame(loop);
 })();
 readout(0); highlight(0);
+
+/* ================= 时钟 3D 视差倾斜 ================= */
+let tX=0,tY=0,gTX=0,gTY=0,lastMove=performance.now();
+addEventListener('pointermove',e=>{
+  const nx=e.clientX/innerWidth-0.5, ny=e.clientY/innerHeight-0.5;
+  gTY=nx*15; gTX=-ny*11; lastMove=performance.now();
+},{passive:true});
+(function tilt(){
+  const idle=(performance.now()-lastMove)>2400;
+  if(idle){ gTX=Math.sin(performance.now()/2300)*4.5; gTY=Math.cos(performance.now()/2700)*7.5; }
+  tX+=(gTX-tX)*0.07; tY+=(gTY-tY)*0.07;
+  clockEl.style.transform=`rotateX(${tX.toFixed(2)}deg) rotateY(${tY.toFixed(2)}deg)`;
+  requestAnimationFrame(tilt);
+})();
 
 /* ================= 水波纹（波动方程模拟） ================= */
 const Water=(()=>{
