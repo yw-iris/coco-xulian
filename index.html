@@ -437,16 +437,23 @@ addEventListener('keydown',e=>{
 })();
 readout(0); highlight(0);
 
-/* ================= 时钟 3D 视差倾斜 ================= */
-let tX=0,tY=0,gTX=0,gTY=0,lastMove=performance.now();
+/* ================= 时钟 3D 视差倾斜 + 空闲自转 ================= */
+let tX=0,tY=0,gTX=0,gTY=0,spin=0,lastMove=performance.now();
 addEventListener('pointermove',e=>{
   const nx=e.clientX/innerWidth-0.5, ny=e.clientY/innerHeight-0.5;
-  gTY=nx*15; gTX=-ny*11; lastMove=performance.now();
+  gTY=nx*16; gTX=-ny*12; lastMove=performance.now();
 },{passive:true});
 (function tilt(){
   const idle=(performance.now()-lastMove)>2400;
-  if(idle){ gTX=Math.sin(performance.now()/2300)*4.5; gTY=Math.cos(performance.now()/2700)*7.5; }
-  tX+=(gTX-tX)*0.07; tY+=(gTY-tY)*0.07;
+  if(idle){
+    /* 空闲：绕 Y 轴真正自转，像悬浮旋转的金属怀表 */
+    spin=(spin+0.2)%360;
+    tX=Math.sin(performance.now()/2600)*4;
+    tY=spin;
+  }else{
+    /* 交互中：跟手倾斜 */
+    tX+=(gTX-tX)*0.07; tY+=(gTY-tY)*0.07;
+  }
   clockEl.style.transform=`rotateX(${tX.toFixed(2)}deg) rotateY(${tY.toFixed(2)}deg)`;
   requestAnimationFrame(tilt);
 })();
