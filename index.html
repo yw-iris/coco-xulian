@@ -368,7 +368,6 @@ let cur=0, tgt=0, dragging=false, prevAng=0, dragMoved=0, curPanel=0, lastHi=-1,
 const idxOf=r=>((Math.round(-r/STEP))%N+N)%N;
 function highlight(i){ if(i===lastHi)return; lastHi=i;
   modEls.forEach((m,k)=>m.classList.toggle('on',k===i));
-  handEl.style.transform=`rotate(${i*STEP}deg)`;
 }
 function readout(i){rR.textContent=MODS[i].rn; rN.textContent=MODS[i].name; rT.textContent='TIME '+MODS[i].time;}
 function switchTo(i){
