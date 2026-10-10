@@ -45,9 +45,13 @@ a{color:var(--ink);text-decoration:none}
 .clock{position:relative;width:min(78vw,350px);height:min(78vw,350px);margin:0 auto;
   touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;
   transform-style:preserve-3d;will-change:transform;
+  transform:rotateX(18deg) rotateY(-14deg);
   background:radial-gradient(circle at 50% 38%,#1d1d1d 0%,#0c0c0c 72%);
   border-radius:50%;
   box-shadow:0 0 0 5px #0a0a0a, 0 24px 50px rgba(0,0,0,.66), inset 0 0 36px rgba(0,0,0,.7)}
+/* 可动的表盘内胆：随指针做细微视差倾斜，轴（外框）不动 */
+.clock .face{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform;
+  transform:rotateX(0deg) rotateY(0deg)}
 .clock:active{cursor:grabbing}
 /* 金属表圈（模拟厚度） */
 .clock::before{content:'';position:absolute;inset:-8px;border-radius:50%;
@@ -66,7 +70,7 @@ a{color:var(--ink);text-decoration:none}
 .clock circle.ring2{fill:none;stroke:var(--ink);stroke-width:.6;opacity:.4}
 .clock line.tk{stroke:var(--ink);stroke-width:.7;opacity:.34}
 .clock line.tk.maj{stroke-width:1.6;opacity:.9}
-#dial{transform-box:view-box;transform-origin:50% 50%;will-change:transform}
+#ticks,#dial{transform-box:view-box;transform-origin:50% 50%;will-change:transform}
 #dial text{fill:var(--ink)}
 #dial .rn{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:.08em}
 #dial .nm{font-family:var(--cn);font-weight:300;font-size:12.5px;letter-spacing:.3em;opacity:.82}
@@ -203,18 +207,20 @@ a{color:var(--ink);text-decoration:none}
 <section class="hub">
   <div class="clock-stage">
   <div class="clock" id="clock">
-    <img class="cface" src="assets/clock.jpg" alt="" aria-hidden="true">
-    <svg viewBox="0 0 320 320" aria-hidden="true">
-      <circle class="ring" cx="160" cy="160" r="152"/>
-      <circle class="ring2" cx="160" cy="160" r="134"/>
-      <circle class="ring2" cx="160" cy="160" r="96"/>
-      <g id="ticks"></g>
-      <g id="dial"></g>
-      <line id="hand" x1="160" y1="160" x2="160" y2="118"/>
-      <path class="ptr" d="M160 22 L167 40 L160 35 L153 40 Z"/>
-      <circle class="ctr" cx="160" cy="160" r="3.4"/>
-      <text class="rn" x="160" y="196" text-anchor="middle" style="font-size:11px;letter-spacing:.4em;opacity:.75">COCO</text>
-    </svg>
+    <div class="face" id="face">
+      <img class="cface" src="assets/clock.jpg" alt="" aria-hidden="true">
+      <svg viewBox="0 0 320 320" aria-hidden="true">
+        <circle class="ring" cx="160" cy="160" r="152"/>
+        <circle class="ring2" cx="160" cy="160" r="134"/>
+        <circle class="ring2" cx="160" cy="160" r="96"/>
+        <g id="ticks"></g>
+        <g id="dial"></g>
+        <line id="hand" x1="160" y1="160" x2="160" y2="118"/>
+        <path class="ptr" d="M160 22 L167 40 L160 35 L153 40 Z"/>
+        <circle class="ctr" cx="160" cy="160" r="3.4"/>
+        <text class="rn" x="160" y="196" text-anchor="middle" style="font-size:11px;letter-spacing:.4em;opacity:.75">COCO</text>
+      </svg>
+    </div>
   </div>
   </div>
   <div class="readout"><span id="r-roman">XII</span><span class="sep">·</span><span id="r-name">入口</span></div>
@@ -373,6 +379,7 @@ MODS.forEach((m,i)=>{
 });
 
 const clockEl=document.getElementById('clock');
+const faceEl=document.getElementById('face');
 const handEl=document.getElementById('hand');
 const modEls=[...document.querySelectorAll('#dial .mod')];
 const rR=document.getElementById('r-roman'), rN=document.getElementById('r-name'), rT=document.getElementById('r-time');
@@ -432,29 +439,23 @@ addEventListener('keydown',e=>{
     if(i!==curPanel)switchTo(i,true);
   }
   dial.style.transform=`rotate(${cur}deg)`;
+  ticks.style.transform=`rotate(${cur}deg)`;
   highlight(idxOf(cur));
   requestAnimationFrame(loop);
 })();
 readout(0); highlight(0);
 
-/* ================= 时钟 3D 视差倾斜 + 空闲自转 ================= */
-let tX=0,tY=0,gTX=0,gTY=0,spin=0,lastMove=performance.now();
+/* ================= 时钟：轴固定 · 表盘可动 · 倾斜 ================= */
+let tX=0,tY=0,gTX=0,gTY=0;
 addEventListener('pointermove',e=>{
   const nx=e.clientX/innerWidth-0.5, ny=e.clientY/innerHeight-0.5;
-  gTY=nx*16; gTX=-ny*12; lastMove=performance.now();
+  gTY=nx*14; gTX=-ny*14;
 },{passive:true});
 (function tilt(){
-  const idle=(performance.now()-lastMove)>2400;
-  if(idle){
-    /* 空闲：绕 Y 轴真正自转，像悬浮旋转的金属怀表 */
-    spin=(spin+0.2)%360;
-    tX=Math.sin(performance.now()/2600)*4;
-    tY=spin;
-  }else{
-    /* 交互中：跟手倾斜 */
-    tX+=(gTX-tX)*0.07; tY+=(gTY-tY)*0.07;
-  }
-  clockEl.style.transform=`rotateX(${tX.toFixed(2)}deg) rotateY(${tY.toFixed(2)}deg)`;
+  /* 轴（外框金属圈）保持固定倾斜，不自转；
+     内胆表盘随指针做细微视差倾斜（可动），刻度随导航滑动 */
+  tX+=(gTX-tX)*0.07; tY+=(gTY-tY)*0.07;
+  faceEl.style.transform=`rotateX(${tX.toFixed(2)}deg) rotateY(${tY.toFixed(2)}deg)`;
   requestAnimationFrame(tilt);
 })();
 
